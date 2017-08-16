@@ -9,7 +9,7 @@ class Model < ActiveRecord::Base
         class_name = class_name.to_s.camelize
         model = self.find_or_create_by(name: class_name)
 
-        klass = Object.const_set(
+        return Object.const_set(
             model.name,
             Class.new(Instance) do
                 # Default to blank
@@ -27,7 +27,6 @@ class Model < ActiveRecord::Base
                 end
             end
         )
-        return klass
     end
 
     class Instance < ActiveRecord::Base
