@@ -5,6 +5,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get
-      render json: params[:model].constantize
+      render json: params[:model].camelize.constantize.to_json
   end
 end
