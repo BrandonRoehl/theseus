@@ -12,11 +12,19 @@ class Model < ActiveRecord::Base
         klass = Kernel.const_set(
             model.name,
             Class.new(Instance) do
-                @id = model.id
-                @name = model.name
+                # Default to blank
                 @cache = {}
                 @keys = nil
+
+                # every models scope
                 default_scope {where(model_id: model.id)}
+
+                # every model has a custom delete method
+                @model = model
+                def self.destroy
+                    Kernel.send(:remove_const, @model.name)
+                    Model.destroy(@model.id)
+                end
             end
         )
         return klass
@@ -66,7 +74,7 @@ class Model < ActiveRecord::Base
             end
 
             def keys
-                @@keys ||= self.all.pluck(:key).map(&:to_sym)
+                @keys ||= self.all.pluck(:key).map(&:to_sym)
             end
 
             def each
@@ -85,19 +93,6 @@ class Model < ActiveRecord::Base
 
             def to_json
                 self.to_h.to_json
-            end
-
-            def destroy
-                Kernel.send(:remove_const, @name)
-                Model.destroy(@id)
-            end
-
-            def id
-                @id
-            end
-
-            def name
-                @name
             end
         end
     end
