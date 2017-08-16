@@ -92,4 +92,3 @@ class Model < ActiveRecord::Base
     private_constant :Instance
 end
 
-
