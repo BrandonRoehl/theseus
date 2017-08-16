@@ -72,3 +72,6 @@ def _set_class(model)
     end
 end
 
+class Test
+
+end
