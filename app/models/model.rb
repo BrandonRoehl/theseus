@@ -7,7 +7,7 @@ class Model < ActiveRecord::Base
         class_name = class_name.to_s.camelize
         model = self.find_or_create_by(name: class_name)
 
-        Kernel.const_set(
+        Object.const_set(
             model.name,
             Class.new(Instance) do
                 default_scope {where(model_id: model.id)}
