@@ -1,4 +1,6 @@
 class Model < ActiveRecord::Base
+    has_many :instances, dependent: :delete_all
+
     before_save do
         self.name = self.name.camelize
     end
@@ -11,6 +13,11 @@ class Model < ActiveRecord::Base
             model.name,
             Class.new(Instance) do
                 default_scope {where(model_id: model.id)}
+
+                def destroy
+                    Kernel.send(:remove_const, self.class.name)
+                    Model.destroy(model.id)
+                end
             end
         )
     end
