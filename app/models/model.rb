@@ -85,6 +85,4 @@ class Model < ActiveRecord::Base
     private_constant :Instance
 end
 
-# Define all models on load
-Model.all.pluck(:name).each { |name| Model.add(name) }
 
