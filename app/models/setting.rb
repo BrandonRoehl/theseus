@@ -1,4 +1,4 @@
-class Model < ApplicationRecord
+class Setting < ApplicationRecord
     # Set the primary key
     self.primary_key = :key
     serialize :value
