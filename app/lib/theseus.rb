@@ -3,7 +3,7 @@ class Model < ActiveRecord::Base
         self.name = self.name.camelize
     end
 
-    def create(class_name)
+    def self.add(class_name)
         class_name = class_name.camelize
         model = self.find_or_create_by(name: class_name)
 
