@@ -9,27 +9,26 @@ class Model < ActiveRecord::Base
         class_name = class_name.to_s.camelize
         model = self.find_or_create_by(name: class_name)
 
-        Kernel.const_set(
+        klass = Kernel.const_set(
             model.name,
             Class.new(Instance) do
+                @id = model.id
+                @name = model.name
+                @cache = {}
+                @keys = nil
                 default_scope {where(model_id: model.id)}
-
-                def destroy
-                    Kernel.send(:remove_const, self.class.name)
-                    Model.destroy(model.id)
-                end
             end
         )
+        return klass
     end
 
     class Instance < ActiveRecord::Base
+        self.abstract_class = true
         # Set the primary key
         self.primary_key = :key
         self.table_name = :instances
         serialize :value
         # Cache to avoid extra queries and dramatically increase speed
-        @@cache = {}
-        @@keys = nil
 
         class << self
             include Enumerable
@@ -46,8 +45,8 @@ class Model < ActiveRecord::Base
                 # key to_sym so we can have a consistent value
                 key = key.to_sym
                 # Only look it up if we haven't before
-                if @@cache[key] ||= self.find_by(key: key)
-                    @@cache[key].value
+                if @cache[key] ||= self.find_by(key: key)
+                    @cache[key].value
                 else
                     nil
                 end
@@ -58,12 +57,12 @@ class Model < ActiveRecord::Base
                 key = key.to_sym
                 # Find a setting if we haven't looked it up and define
                 # it if it is not initialized
-                @@cache[key] ||= self.find_or_initialize_by(key: key)
-                @@cache[key].value = value
-                @@cache[key].save
+                @cache[key] ||= self.find_or_initialize_by(key: key)
+                @cache[key].value = value
+                @cache[key].save
                 # Bake keys together if they have been retrieved
                 # this is a union assignment operator
-                @@keys |= [key] if @@keys
+                @keys |= [key] if @keys
             end
 
             def keys
@@ -86,6 +85,19 @@ class Model < ActiveRecord::Base
 
             def to_json
                 self.to_h.to_json
+            end
+
+            def destroy
+                Kernel.send(:remove_const, @name)
+                Model.destroy(@id)
+            end
+
+            def id
+                @id
+            end
+
+            def name
+                @name
             end
         end
     end
