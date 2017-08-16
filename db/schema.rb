@@ -13,7 +13,7 @@
 ActiveRecord::Schema.define(version: 20170816172425) do
 
   create_table "instances", id: false, force: :cascade do |t|
-    t.string "key"
+    t.string "key", null: false
     t.text "value"
     t.integer "model_id", null: false
     t.index ["key", "model_id"], name: "index_instances_on_key_and_model_id", unique: true
