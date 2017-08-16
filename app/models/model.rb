@@ -9,7 +9,7 @@ class Model < ActiveRecord::Base
         class_name = class_name.to_s.camelize
         model = self.find_or_create_by(name: class_name)
 
-        klass = Kernel.const_set(
+        klass = Object.const_set(
             model.name,
             Class.new(Instance) do
                 # Default to blank
@@ -22,7 +22,7 @@ class Model < ActiveRecord::Base
                 # every model has a custom delete method
                 @model = model
                 def self.destroy
-                    Kernel.send(:remove_const, @model.name)
+                    Object.send(:remove_const, @model.name)
                     Model.destroy(@model.id)
                 end
             end
