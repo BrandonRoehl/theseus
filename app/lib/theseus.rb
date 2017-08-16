@@ -1,6 +1,5 @@
 def _set_class(model)
-    # model_id = Model.find_by(name: model)
-    model_id = model
+    model_id = Model.find_by(name: model)
 
     return Class.new(ActiveRecord::Base) do
         # Set the primary key
@@ -72,6 +71,3 @@ def _set_class(model)
     end
 end
 
-class Test
-
-end
