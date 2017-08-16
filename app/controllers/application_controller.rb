@@ -3,4 +3,8 @@ class ApplicationController < ActionController::Base
 
   def console
   end
+
+  def get
+      render json: params[:model].constantize
+  end
 end
