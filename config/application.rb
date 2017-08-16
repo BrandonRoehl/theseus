@@ -17,7 +17,7 @@ module Theseus
     config.to_prepare do
         begin
             Model.all.pluck(:name).each { |name| Model.add(name) }
-        rescue
+        rescue ActiveRecord::StatementInvalid
         end
     end
   end
