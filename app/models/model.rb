@@ -4,7 +4,7 @@ class Model < ActiveRecord::Base
     end
 
     def self.add(class_name)
-        class_name = class_name.camelize
+        class_name = class_name.to_s.camelize
         model = self.find_or_create_by(name: class_name)
 
         Kernel.const_set(
