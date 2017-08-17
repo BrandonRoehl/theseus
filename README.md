@@ -1,5 +1,7 @@
 # Theseus
 
+After the [paradox](https://en.wikipedia.org/wiki/Ship_of_Theseus)
+
 ```ruby
 # Define new models with
 Model.add :ClassName
@@ -7,7 +9,7 @@ Model.add :ClassName
 ClassName
 # You can also define any accessors
 # and getter via just calling the named method
-ClassName.variable = %W( Accepts anything even an array )
+ClassName.variable = %w( Accepts anything even an array )
 # Then to get the variable just use it
 puts ClassName.variable
 # Then as a hash
